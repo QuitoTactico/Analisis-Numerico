@@ -28,8 +28,35 @@ def conversion_binario(numero_decimal : int | float, exponente10 : int = 0, inve
         numero_decimal, exponente2 = buscar_potencia2(numero_decimal)
 
     # Si el número ya es 0 o 1, no es necesaria la conversión.
-    if numero_decimal in [0, 1]:
-        return numero_decimal
+    if numero_decimal == 0:
+        return {
+        'list'      : [0],
+        'str'       : '0',
+        'int'       : 0,
+        'float'     : 0.0,    # Conversión común
+        'exponente2': 0,
+        'signo'     : 1
+    }
+
+    if numero_decimal == 1:
+        return {
+        'list'      : [1],
+        'str'       : '1',
+        'int'       : 1,
+        'float'     : 1.0,    # Conversión común
+        'exponente2': 1,
+        'signo'     : 1
+    }
+
+    if numero_decimal == -1:
+        return {
+        'list'      : [1],
+        'str'       : '1',
+        'int'       : 1,
+        'float'     : 1.0,    # Conversión común
+        'exponente2': 1,
+        'signo'     : 0
+    }
     
     lista_binario = []
     while numero_decimal > 1:
@@ -62,12 +89,12 @@ def buscar_potencia2(numero_decimal):
 
 
 def punto_flotante(lista_binario, exponente2, bits_mantisa):
+    ignore = False
     exponente2 = exponente2+len(lista_binario)
     lista_binario = lista_binario[:bits_mantisa+2]
-
+    lista_binario = lista_binario[:-1]
     try:
         if lista_binario[bits_mantisa+1] == 1:
-            lista_binario = lista_binario[:-1]
             lista_binario, suma_exponente = binario_plus1(lista_binario)
             exponente2 += suma_exponente    # En caso de que se cree una cifra nueva y haya que correr el punto.
     except:
@@ -165,7 +192,7 @@ if __name__ == '__main__':
     '''
 
     print('-'*50)
-    print('Número original:', numero_decimal, '(2) | ', numero_binario_exacto, '(10)')
+    print('Número original:', numero_decimal, '(10) | ', numero_binario_exacto, '(2)')
     print('Binario guardado:', numero_binario_guardado, '(2) | ')
 
     print('\nNúmero máquina:', numero_maquina)
