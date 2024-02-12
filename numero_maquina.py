@@ -1,7 +1,6 @@
 # Esteban Vergara Giraldo
 # Análisis Numérico
 # Convertidor de número base 10 (con posibles cifras decimales) a número máquina
-import maquina_a_base10
 
 def conversion_binario(numero_decimal : int | float, exponente10 : int = 0, invertido : bool = False) -> dict:
     '''Convierte el entero decimal que le manden en una lista con las posiciones del binario
@@ -145,8 +144,13 @@ def binario_plus1(lista_binario : list) -> tuple[list, int]:
     return lista_binario, 1
 
 
-    
+def binario_a_decimal(binario : list, signo_mantisa : str, exponente : int) -> list:
+    decimal = 0
+    for i in [1]+binario:
+        exponente -= 1
+        decimal += i * (2**exponente)
 
+    return decimal if signo_mantisa == '1' else -decimal
 
 
 
@@ -209,7 +213,7 @@ if __name__ == '__main__':
     lista_numero_maquina = [signo_mantisa , signo_exponente] + lista_binario_2[1:] + lista_exponente
     numero_maquina = ''.join(map(str,lista_numero_maquina))
 
-    numero_decimal_guardado = maquina_a_base10.binario_a_decimal(lista_binario_2[1:], str(signo_mantisa), exponente2)
+    numero_decimal_guardado = binario_a_decimal(lista_binario_2[1:], str(signo_mantisa), exponente2)
 
     # Comprobación de los pasos
     
