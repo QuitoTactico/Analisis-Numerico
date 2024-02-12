@@ -1,6 +1,7 @@
 # Esteban Vergara Giraldo
 # Análisis Numérico
 # Convertidor de número base 10 (con posibles cifras decimales) a número máquina
+import maquina_a_base10
 
 def conversion_binario(numero_decimal : int | float, exponente10 : int = 0, invertido : bool = False) -> dict:
     '''Convierte el entero decimal que le manden en una lista con las posiciones del binario
@@ -79,7 +80,7 @@ def conversion_binario(numero_decimal : int | float, exponente10 : int = 0, inve
     }
 
 
-def buscar_potencia2(numero_decimal):
+def buscar_potencia2(numero_decimal : float) -> tuple[float, int]:
     exponente2 = 0
     while numero_decimal%1 != 0:
         exponente2 += 1
@@ -88,7 +89,7 @@ def buscar_potencia2(numero_decimal):
     return numero_decimal , -exponente2
 
 
-def punto_flotante(lista_binario, exponente2, bits_mantisa):
+def punto_flotante(lista_binario, exponente2, bits_mantisa, redondeo : str = 'simetrico') -> dict:
     exponente2 = exponente2+len(lista_binario)
     lista_binario = lista_binario[:bits_mantisa+2]
     try:
@@ -109,7 +110,7 @@ def punto_flotante(lista_binario, exponente2, bits_mantisa):
     }
     
 
-def binario_plus1(lista_binario : list):
+def binario_plus1(lista_binario : list) -> tuple[list, int]:
 
     # Para iterar de izquierda a derecha
     lista_binario.reverse()
@@ -198,9 +199,13 @@ if __name__ == '__main__':
     print(diccionario_exponente)
     '''
 
+    numero_decimal_guardado = maquina_a_base10.binario_a_decimal(lista_binario_2[1:], str(signo_mantisa), exponente2)
+
     print('-'*50)
-    print('Número original:', numero_decimal, '(10) | ', numero_binario_exacto, '(2)')
-    print('Binario guardado:', numero_binario_guardado, '(2) | ')
+    print('Número original:', numero_decimal, '(10) \t| ', numero_binario_exacto, '(2)')
+    print('Número guardado:', numero_decimal_guardado, '(10) \t| ' , f'0.{int(numero_binario_guardado)}', f'x2^{exponente2} (2)')
+    print('Error absoluto:', abs(numero_decimal - numero_decimal_guardado))
+    print('Error relativo:', abs((numero_decimal - numero_decimal_guardado)/numero_decimal))
 
     print('\nNúmero máquina:', numero_maquina)
     print('Mantisa:\t', signo_mantisa, ' |   1' ,lista_binario_2[1:])
