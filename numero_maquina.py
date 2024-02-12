@@ -89,18 +89,31 @@ def buscar_potencia2(numero_decimal : float) -> tuple[float, int]:
     return numero_decimal , -exponente2
 
 
-def punto_flotante(lista_binario, exponente2, bits_mantisa, redondeo : str = 'simetrico') -> dict:
+def punto_flotante(lista_binario, exponente2, bits_mantisa, redondeo : str = 's') -> dict:
     exponente2 = exponente2+len(lista_binario)
     lista_binario = lista_binario[:bits_mantisa+2]
-    try:
-        if lista_binario[bits_mantisa+1] == 1:
-            lista_binario = lista_binario[:-1]
-            lista_binario, suma_exponente = binario_plus1(lista_binario)
-            exponente2 += suma_exponente    # En caso de que se cree una cifra nueva y haya que correr el punto.
-        else:
-            lista_binario = lista_binario[:-1]
-    except:
-        pass
+
+    # Redondeo simétrico, defaut
+    if redondeo == 's':
+        try:
+            if lista_binario[bits_mantisa+1] == 1:
+                lista_binario = lista_binario[:-1]
+                lista_binario, suma_exponente = binario_plus1(lista_binario)
+                exponente2 += suma_exponente    # En caso de que se cree una cifra nueva y haya que correr el punto.
+            else:
+                lista_binario = lista_binario[:-1]
+        except:
+            pass
+    
+    # Redondeo hacia abajo, corte
+    elif redondeo == 'c':
+        lista_binario = lista_binario[:-1]
+    
+    # Redondeo hacia arriba, exceso
+    elif redondeo == 'e':
+        lista_binario = lista_binario[:-1]
+        lista_binario, suma_exponente = binario_plus1(lista_binario)
+        exponente2 += suma_exponente
     
 
     return {
@@ -151,7 +164,12 @@ if __name__ == '__main__':
     bits_mantisa    = int(input('Ingrese los bits para la mantisa -> '))
     bits_exponente  = int(input('Ingrese los bits para el exponente -> '))
     numero_decimal  = float(input('Ingrese el número decimal -> '))
-    exponente10     = int(input('Ingrese el exponente -> '))                # No obligatorio.
+    exponente10     = input('Ingrese el exponente -> ')                     # No obligatorio.
+    redondeo        = input('Ingrese el tipo de redondeo (c/e/s) -> ')      # No obligatorio.
+
+    exponente10 =  0    if exponente10 == ''    else int(exponente10)
+    redondeo    = 's'   if redondeo == ''       else redondeo
+
 
     diccionario_binario     = conversion_binario(numero_decimal, exponente10)
     numero_binario_exacto   = diccionario_binario['float']
@@ -161,7 +179,7 @@ if __name__ == '__main__':
 
     #print(lista_binario, len(lista_binario), exponente2)
 
-    diccionario_flotante    = punto_flotante(lista_binario, exponente2, bits_mantisa)
+    diccionario_flotante    = punto_flotante(lista_binario, exponente2, bits_mantisa, redondeo)
     numero_binario_guardado = diccionario_flotante['float']
     lista_binario_2         = diccionario_flotante['list']
     exponente2              = diccionario_flotante['exponente2']
@@ -191,6 +209,8 @@ if __name__ == '__main__':
     lista_numero_maquina = [signo_mantisa , signo_exponente] + lista_binario_2[1:] + lista_exponente
     numero_maquina = ''.join(map(str,lista_numero_maquina))
 
+    numero_decimal_guardado = maquina_a_base10.binario_a_decimal(lista_binario_2[1:], str(signo_mantisa), exponente2)
+
     # Comprobación de los pasos
     
     '''
@@ -199,7 +219,7 @@ if __name__ == '__main__':
     print(diccionario_exponente)
     '''
 
-    numero_decimal_guardado = maquina_a_base10.binario_a_decimal(lista_binario_2[1:], str(signo_mantisa), exponente2)
+    # --------------------------------------------------------------
 
     print('-'*50)
     print('Número original:', numero_decimal, '(10) \t| ', numero_binario_exacto, '(2)')
@@ -207,8 +227,9 @@ if __name__ == '__main__':
     print('Error absoluto:', abs(numero_decimal - numero_decimal_guardado))
     print('Error relativo:', abs((numero_decimal - numero_decimal_guardado)/numero_decimal))
 
-    print('\nNúmero máquina:', numero_maquina)
-    print('Mantisa:\t', signo_mantisa, ' |   1' ,lista_binario_2[1:])
-    print('Exponente:\t', signo_exponente, ' | ' ,lista_exponente)
-    print(lista_numero_maquina)
+    # --------------------------------------------------------------
+    
+    print('\nMantisa:\t', signo_mantisa, ' |  1' ,lista_binario_2[1:])
+    print('Exponente:\t', signo_exponente, ' |   ' ,lista_exponente)
+    print('Número máquina:', lista_numero_maquina, ' = ', numero_maquina, ' = ', numero_maquina[:2], numero_maquina[2:2+bits_mantisa], numero_maquina[2+bits_mantisa:])
 
