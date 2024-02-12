@@ -89,14 +89,15 @@ def buscar_potencia2(numero_decimal):
 
 
 def punto_flotante(lista_binario, exponente2, bits_mantisa):
-    ignore = False
     exponente2 = exponente2+len(lista_binario)
     lista_binario = lista_binario[:bits_mantisa+2]
-    lista_binario = lista_binario[:-1]
     try:
         if lista_binario[bits_mantisa+1] == 1:
+            lista_binario = lista_binario[:-1]
             lista_binario, suma_exponente = binario_plus1(lista_binario)
             exponente2 += suma_exponente    # En caso de que se cree una cifra nueva y haya que correr el punto.
+        else:
+            lista_binario = lista_binario[:-1]
     except:
         pass
     
@@ -157,14 +158,20 @@ if __name__ == '__main__':
     exponente2              = diccionario_binario['exponente2']
     signo_mantisa           = diccionario_binario['signo']
 
+    #print(lista_binario, len(lista_binario), exponente2)
+
     diccionario_flotante    = punto_flotante(lista_binario, exponente2, bits_mantisa)
     numero_binario_guardado = diccionario_flotante['float']
-    lista_binario           = diccionario_flotante['list']
+    lista_binario_2         = diccionario_flotante['list']
     exponente2              = diccionario_flotante['exponente2']
+
+    #print(lista_binario_2, exponente2)
 
     diccionario_exponente = conversion_binario(exponente2)
     exponente2_binario  = diccionario_exponente['list']
     signo_exponente     = diccionario_exponente['signo']
+
+    #print(exponente2_binario)
 
     # El número es tan grande o pequeño que su exponente no cabe en sus bits reservados
     if len(exponente2_binario) > bits_exponente:
@@ -178,9 +185,9 @@ if __name__ == '__main__':
     lista_exponente =  [0 for _ in range(bits_exponente-len(exponente2_binario))] + exponente2_binario
 
     # Rellenar los ceros a la derecha en los bits de la mantisa
-    lista_binario = lista_binario + [0 for _ in range(bits_mantisa-len(lista_binario))]
+    lista_binario_2 = lista_binario_2 + [0 for _ in range(bits_mantisa-len(lista_binario_2))]
 
-    lista_numero_maquina = [signo_mantisa , signo_exponente] + lista_binario[1:] + lista_exponente
+    lista_numero_maquina = [signo_mantisa , signo_exponente] + lista_binario_2[1:] + lista_exponente
     numero_maquina = ''.join(map(str,lista_numero_maquina))
 
     # Comprobación de los pasos
@@ -196,7 +203,7 @@ if __name__ == '__main__':
     print('Binario guardado:', numero_binario_guardado, '(2) | ')
 
     print('\nNúmero máquina:', numero_maquina)
-    print('Mantisa:\t', signo_mantisa, ' | 1+ ' ,lista_binario[1:])
+    print('Mantisa:\t', signo_mantisa, ' |   1' ,lista_binario_2[1:])
     print('Exponente:\t', signo_exponente, ' | ' ,lista_exponente)
     print(lista_numero_maquina)
 
