@@ -9,7 +9,7 @@ function [E,s] = MatJacobiSeid(x0,A,b,Tol,niter,met)
     D=diag(diag(A));
     L=-tril(A,-1);
     U=-triu(A,+1);
-    while error>Tol && c<niter
+    while error>=Tol && c<niter
         if met==0
             T=inv(D)*(L+U);
             C=inv(D)*b;
@@ -20,7 +20,7 @@ function [E,s] = MatJacobiSeid(x0,A,b,Tol,niter,met)
             C=inv(D-L)*b;
             x1=T*x0+C;
         end
-        E(c+1)=norm(x1-x0,'inf');
+        E(c+1)=norm((x1-x0)/x1,'inf');
         error=E(c+1);
         x0=x1
         c=c+1;
